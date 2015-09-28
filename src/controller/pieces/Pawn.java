@@ -1,0 +1,51 @@
+package controller.pieces;
+
+import model.ChessModel;
+
+import controller.Piece;
+import controller.Teams;
+
+public class Pawn extends Chessman {
+
+	boolean first_step;
+	/**
+	 * 
+	 * @param color
+	 */
+	public Pawn(Teams color){
+		super(color, Piece.PAWN);
+		first_step = true;
+	}
+
+	 /**
+	 * If move is from one tile to another on diagonal, check if there is another chessman <BR>
+	 * else check move is one tile forward
+	 */
+	public boolean mkMove(int ax, int ay, int bx, int by, ChessModel model){
+		
+		int i = (model.getTable()[ax][ay].getColor()).equals(Teams.WHITE) ? -1 : 1;
+		//check if in the diagonals tiles there is a chessman
+		if(((by == ay+1 || by == ay-1) && bx == ax+i)
+				&&(!(model.getTable()[bx][by].getName().equals(Piece.EMPTYMAN)))
+				&& !(model.getTable()[ax][ay].checkColor(model.getTable()[bx][by]))){
+			jump(bx, by, ax, ay, model);
+			return false;
+		}
+		else if(first_step){
+			int j = i<0 ? -2 : 2;
+			if ((by != ay || (bx!= ax+i && bx!= ax+j))||(!(model.getTable()[bx][by].getName().equals(Piece.EMPTYMAN))))
+				return false;
+		}
+		else if ((by != ay || bx!= ax+i)||(!(model.getTable()[bx][by].getName().equals(Piece.EMPTYMAN))))
+		 //check if pawn moves just for one tile in vertical
+			return false;
+		
+		return true;
+		
+		
+	}
+
+	public void notFirst() {
+		first_step = false;
+	}
+}
